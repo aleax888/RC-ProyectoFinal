@@ -12,41 +12,13 @@ string number_format(int number)
     return ans;
 }
 
-string make_protocol_C1(string nombre_del_nodo)
+string make_protocol(string protocol_command, vector<string> elements)
 {
-    string ans = "C1" + number_format(nombre_del_nodo.size()) + nombre_del_nodo;
-    return ans;
-}
-
-string make_protocol_C2(string nombre_del_nodo1, string nombre_de_la_relacion, string nombre_del_nodo2)
-{
-    string ans = "C2" + 
-        number_format(nombre_del_nodo1.size()) + nombre_del_nodo1 +
-        number_format(nombre_de_la_relacion.size()) + nombre_de_la_relacion +
-        number_format(nombre_del_nodo2.size()) + nombre_del_nodo2;
-    return ans;
-}
-
-string make_protocol_D1(string nombre_de_la_relacion)
-{
-    string ans = "D1" + number_format(nombre_de_la_relacion.size()) + nombre_de_la_relacion;
-    return ans;
-}
-
-string make_protocol_D2(string nombre_del_nodo1, string nombre_de_la_relacion, string nombre_del_nodo2)
-{
-    string ans = "D2" +
-        number_format(nombre_del_nodo1.size()) + nombre_del_nodo1 +
-        number_format(nombre_de_la_relacion.size()) + nombre_de_la_relacion +
-        number_format(nombre_del_nodo2.size()) + nombre_del_nodo2;
-    return ans;
-}
-
-string make_protocol_D3(string nombre_del_nodo, string nombre_del_atributo)
-{
-    string ans = "D3" + 
-        number_format(nombre_del_nodo.size()) + nombre_del_nodo +
-        number_format(nombre_del_atributo.size()) + nombre_del_atributo;
+    string ans = protocol_command;
+    
+    for (int i = 1, s = elements.size(); i < s; ++i)
+        ans += number_format(elements[i].size()) + elements[i];
+    
     return ans;
 }
 
@@ -94,16 +66,8 @@ vector<string> interpret_query(string query)
     query_parts.push_back(query.substr(5, 1));
     split_query(query_parts, query.substr(7, query.size() - 1));
 
-    /*cout << "parsing: " << endl;
-    for (int i = 0, s = query_parts.size(); i < s; ++i)
-    {
-        cout << query_parts[i] << endl;
-    }*/
-
     return query_parts;
 }
-
-
 
 void menu()
 {
@@ -118,44 +82,52 @@ void menu()
         space_format(query);
         vector<string> query_parts = interpret_query(query);
 
-        /*cout << "parsing: " << endl;
-        for (int i = 0, s = query_parts.size(); i < s; ++i)
-        {
-            cout << query_parts[i] << endl;
-        }*/
-
         if (query_parts[0] == "C")
         {
             int count = count_spaces(query);
             if (count == 3)
-                packet = make_protocol_C1(query_parts[1]);
+                packet = make_protocol("C1", query_parts);
             else if (count == 5)
-                packet = make_protocol_C2(query_parts[1], query_parts[2], query_parts[3]);
-
-            // wait protocol A
+                packet = make_protocol("C2", query_parts);
         }
 
         else if (query_parts[0] == "R")
         {
-            // working progress
+            int count = count_spaces(query);
+            if (count == 5)
+            {
+                query_parts.erase(query_parts.begin() + 2);
+                packet = make_protocol("R1", query_parts) + "000";
+            }
+            else if (count == 4 and query_parts[query_parts.size() - 1] == "A")
+                packet = make_protocol("R2", query_parts);
+            else if (count == 4 and query_parts[query_parts.size() - 1] == "I")
+                packet = make_protocol("R3", query_parts);
         }
 
         else if (query_parts[0] == "U")
         {
-            // working progress
+            int count = count_spaces(query);
+            if (count == 6)
+            {
+                query_parts.erase(query_parts.begin() + 2);
+                packet = make_protocol("U1", query_parts);
+            }
+            else if (count == 8)
+                packet = make_protocol("U2", query_parts);
+            else if (count == 4)
+                packet = make_protocol("U3", query_parts);
         }
 
         else if (query_parts[0] == "D")
         {
             int count = count_spaces(query);
             if (count == 3)
-                packet = make_protocol_D1(query_parts[1]);
+                packet = make_protocol("D1", query_parts);
             else if (count == 5)
-                packet = make_protocol_D2(query_parts[1], query_parts[2], query_parts[3]);
+                packet = make_protocol("D2", query_parts);
             else if (count == 4)
-                packet = make_protocol_D3(query_parts[1], query_parts[2]);
-
-            // wait protocol A
+                packet = make_protocol("D3", query_parts);
         }
 
         else
@@ -163,7 +135,9 @@ void menu()
             cout << "error" << endl;
         }
 
+        // send packet
         cout << "packet: " << packet << endl << endl;
+        // wait protocol A
     }
 }
 
