@@ -1,0 +1,6 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/mnt/c/ClasesOnline/2022-1/Redes y Comunicacion/RC-ProyectoFinal'
+make: Nothing to be done for 'all'.
+ 
+make: Leaving directory '/mnt/c/ClasesOnline/2022-1/Redes y Comunicacion/RC-ProyectoFinal'
+ 
