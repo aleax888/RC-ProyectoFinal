@@ -148,7 +148,7 @@ void read_thread(int socket_cliente) {
 int main(){
 
 // SQLLITE
-    rc = sqlite3_open("NA1.db", &db);
+    rc = sqlite3_open("NA4.db", &db);
     if( rc ) {
         fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(db));
         return(0);
@@ -171,7 +171,7 @@ int main(){
     memset(&stSockAddr, 0, sizeof(struct sockaddr_in));
  
     stSockAddr.sin_family = AF_INET;
-    stSockAddr.sin_port = htons(45001);
+    stSockAddr.sin_port = htons(45004);
     stSockAddr.sin_addr.s_addr = INADDR_ANY;
  
     if(-1 == bind(SocketServer,(const struct sockaddr *)&stSockAddr, sizeof(struct sockaddr_in)))
