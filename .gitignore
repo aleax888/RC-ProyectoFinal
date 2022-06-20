@@ -1,4 +1,5 @@
 # Ignora base de datos
 *.db
 *.exe
-.vscode
+# Ignora archivos de vscode
+.vscode/*
